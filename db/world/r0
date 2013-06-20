@@ -1,0 +1,1 @@
+{"roomUUID":0,"name":"Start Room","description":"This is the room where everything begins.","exits":[{"name":"north","targetUUID":1}]}
