@@ -1,24 +1,27 @@
 FxMud is a very simple Java Mud server.
 
-What sets it apart from other simple Java Mud servers is that it actually works.
+A long time I worked as a programmer on MUDS. I thought it was interesting.
+These days I muds are probably about dead. But there has always been a part of me that
+always wanted to design a MUD from scratch. At one point I attempted it, but didn't get
+very far at all.
 
-This mud codebase is very BARE BONES.
+This is my new attempt and it has been much easier and simpler to do this time around.
 
-What it has:
-- User creation
-- Character creation/selection
-- Seperation of Login from Characters
-- Rooms
-- Basic Exits
-- Say
-- Display of characters in rooms.
+I notice most other java codebases are either really complex or in a non-working state.
+The mud I have seen are basically copy of MUDs made in C and ported over to Java.
+Meaning they do a lot of things wrong way for Java.
 
-Know bugs:
-- You can play a character that is already being played.
-- You can login more then once.
-- You can't save.
-- The character will not log out (even if you disconnect).
+So I decided to make a clean, small, simple but Complete mud codebase that anyone who
+has a love for Java can use.
 
-Required Lbiraries:
+This mud codebase is currently very BARE BONES.
+
+Current State:
+
+Currently you can get login (or create a login), create a character and login.
+You can walk through the rooms and use a handful of very simple commands.
+
+
+Required Libraries:
 - Netty-4.0.0.CR5 (More recent versions 'should' work)
 - Gson-2.2.4 (But any recent version will work)
