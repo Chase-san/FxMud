@@ -230,4 +230,32 @@ public class StringUtils {
 		}
 		return buf.toString();
 	}
+	
+	/**
+	 * Gets the string after the first occurrence of the given character.
+	 * Not including the character.
+	 * @param src The source string.
+	 * @param ch The character.
+	 * @return The string after the first occurrence of the given character, or null.
+	 */
+	public static String getAfter(String src, char ch) {
+		int index = src.indexOf(ch);
+		if(index != -1 && index + 1 < src.length())
+			return src.substring(index + 1);
+		return null;
+	}
+	
+	/**
+	 * Gets the string before the first occurrence of the given character.
+	 * Not including the character.
+	 * @param src The source string.
+	 * @param ch The character.
+	 * @return The string before the first occurrence of the given character, or null.
+	 */
+	public static String getBefore(String src, char ch) {
+		int index = src.indexOf(ch);
+		if(index != -1)
+			return src.substring(0,index);
+		return null;
+	}
 }

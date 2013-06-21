@@ -25,18 +25,18 @@ package org.csdgn.fxm.net;
 import java.nio.charset.Charset;
 import java.util.ArrayDeque;
 
-import org.csdgn.fxm.model.Player;
-import org.csdgn.fxm.net.msg.LoginHandler;
+import org.csdgn.fxm.controller.Login;
+import org.csdgn.fxm.model.Character;
 
 import io.netty.channel.Channel;
 
 public class Session {
 	private static final Charset ASCII = Charset.forName("US-ASCII");
 
-	protected ArrayDeque<MessageHandler> hStack;
-	protected MessageHandler handler;
+	protected ArrayDeque<InputHandler> hStack;
+	protected InputHandler handler;
 	protected Channel channel;
-	public Player player;
+	public Character character;
 	public String username;
 
 	/**
@@ -47,8 +47,8 @@ public class Session {
 	 */
 	public Session(Channel chan) {
 		channel = chan;
-		hStack = new ArrayDeque<MessageHandler>();
-		setMessageHandler(new LoginHandler());
+		hStack = new ArrayDeque<InputHandler>();
+		setMessageHandler(new Login());
 	}
 
 	/**
@@ -57,13 +57,20 @@ public class Session {
 	public synchronized void disconnect() {
 		channel.disconnect();
 	}
+	
+	/**
+	 * Forces a message to be interpreted.
+	 */
+	public void force(String request) {
+		this.received(request);
+	}
 
 	/**
 	 * Called when the user of this session sends a message.
 	 * 
 	 * @param request
 	 */
-	public void messageReceived(String request) {
+	public void received(String request) {
 		handler.received(this, request);
 	}
 
@@ -84,7 +91,7 @@ public class Session {
 	/**
 	 * Pushes the given handler onto the handler stack.
 	 */
-	public void pushMessageHandler(MessageHandler handler) {
+	public void pushMessageHandler(InputHandler handler) {
 		if (this.handler != null) {
 			hStack.push(this.handler);
 		}
@@ -95,7 +102,7 @@ public class Session {
 	/**
 	 * Clears the handler stack and sets the message handler.
 	 */
-	public void setMessageHandler(MessageHandler handler) {
+	public void setMessageHandler(InputHandler handler) {
 		hStack.clear();
 		if (this.handler != null) {
 			this.handler.exit(this);

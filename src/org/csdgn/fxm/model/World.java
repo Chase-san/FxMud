@@ -28,15 +28,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.csdgn.fxm.Config;
-import org.csdgn.fxm.net.MessageHandler;
-import org.csdgn.fxm.net.msg.GameHandler;
+import org.csdgn.fxm.controller.Game;
+import org.csdgn.fxm.net.InputHandler;
 import org.csdgn.util.IOUtils;
 
 import com.google.gson.Gson;
 
+/**
+ * Tracks game data.
+ * @author Chase
+ */
 public class World {
-	public MessageHandler gameHandler = new GameHandler();
-	public ArrayList<Player> characters = new ArrayList<Player>();
+	public InputHandler gameHandler = new Game();
+	public ArrayList<Character> characters = new ArrayList<Character>();
 	public ArrayList<Room> rooms = new ArrayList<Room>();
 	public HashMap<Integer, Room> roomsUUID = new HashMap<Integer, Room>();
 	
@@ -63,7 +67,7 @@ public class World {
 	/**
 	 * Places the character in the room referenced in its roomUUID.
 	 */
-	public void placeCharacterInRoom(Player chara) {
+	public void placeCharacterInRoom(Character chara) {
 		Room r = roomsUUID.get(chara.roomUUID);
 		if(r == null) {
 			r = roomsUUID.get(0);

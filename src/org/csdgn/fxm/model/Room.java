@@ -25,15 +25,47 @@ package org.csdgn.fxm.model;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import org.csdgn.fxm.net.Session;
+
 public class Room {
 	public int roomUUID;
 	public String name;
 	public String description;
 	public ArrayList<Exit> exits;
-	public transient HashSet<Player> players;
+	public transient HashSet<Character> players;
 	
 	public Room() {
 		exits = new ArrayList<Exit>();
-		players = new HashSet<Player>();
+		players = new HashSet<Character>();
+	}
+	
+	public void displayRoomTo(Session session) {
+		session.writeLn("",name + "--",description);
+		
+		int exitCount = exits.size(); 
+		if(exitCount > 0) {
+			session.write("You see an exit ");
+			for(int i=0;i<exitCount;++i) {
+				if (i > 0) {
+					if (i == exitCount - 1) {
+						session.write("and ");
+					} else {
+						session.write(", ");
+					}
+				}
+				session.write(exits.get(i).getName());
+			}
+			session.write(".");
+			session.writeLn();
+		}
+		
+		//players
+		if(players.size() > 1) {
+			for(Character p : players) {
+				if(p == session.character)
+					continue;
+				session.write(String.format("%s %s is standing here.", p.givenName, p.familyName));
+			}
+		}
 	}
 }

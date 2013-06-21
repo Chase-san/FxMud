@@ -20,35 +20,34 @@
  *    3. This notice may not be removed or altered from any source
  *    distribution.
  */
-package org.csdgn.fxm.model;
+package org.csdgn.fxm.cmd.impl;
 
-import org.csdgn.fxm.Server;
+import org.csdgn.fxm.cmd.Command;
+import org.csdgn.fxm.cmd.Interpreter;
+import org.csdgn.fxm.model.Exit;
+import org.csdgn.fxm.net.Session;
+import org.csdgn.util.StringUtils;
 
-public class Exit {
-	private transient Room target;
-	private String name;
-	private int targetUUID;
-	
-	public Exit(String name, Room room) {
-		this.name = name;
-		this.targetUUID = room.roomUUID;
-		this.target = room;
-	}
-	
-	public Room getTarget() {
-		if(target == null) {
-			//lazy initialize
-			target = Server.world.roomsUUID.get(targetUUID);
-			//TODO if target is still null, throw error?
+public class Look implements Command {
+	@Override
+	public void execute(Session session, String input) {
+		input = StringUtils.getAfter(input, ' ');
+		if(input != null) {
+			//TODO add the ability to look at players
+			
+			//check exits
+			Exit e = Interpreter.findExit(input, session.character.room);
+			if(e != null) {
+				session.writeLn("You peer " + e.getName());
+				
+				e.getTarget().displayRoomTo(session);
+			} else {
+				session.writeLn("You don't see that here.");
+			}
+		} else {
+			//redisplay room
+			session.character.room.displayRoomTo(session);
+			return;
 		}
-		return target;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public int getTargetUUID() {
-		return targetUUID;
 	}
 }

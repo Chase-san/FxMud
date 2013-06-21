@@ -20,35 +20,33 @@
  *    3. This notice may not be removed or altered from any source
  *    distribution.
  */
-package org.csdgn.fxm.model;
+package org.csdgn.fxm.cmd.impl;
 
-import org.csdgn.fxm.Server;
+import org.csdgn.fxm.cmd.Command;
+import org.csdgn.fxm.net.Session;
+import org.csdgn.util.StringUtils;
 
-public class Exit {
-	private transient Room target;
-	private String name;
-	private int targetUUID;
-	
-	public Exit(String name, Room room) {
-		this.name = name;
-		this.targetUUID = room.roomUUID;
-		this.target = room;
-	}
-	
-	public Room getTarget() {
-		if(target == null) {
-			//lazy initialize
-			target = Server.world.roomsUUID.get(targetUUID);
-			//TODO if target is still null, throw error?
+public class Say implements Command {
+	@Override
+	public void execute(Session session, String input) {
+		if(input.startsWith("'")) {
+			input = input.substring(1);
+		} else {
+			input = StringUtils.getAfter(input, ' ');
 		}
-		return target;
+		
+		if(input != null) {
+			if(input.length() > 0) {
+				doSay(session,input);
+				return;
+			}
+		}
+		
+		session.writeLn("Say what?");
 	}
-
-	public String getName() {
-		return name;
-	}
-
-	public int getTargetUUID() {
-		return targetUUID;
+	
+	public void doSay(Session session, String whatToSay) {
+		session.writeLn(String.format("You say '%s'",whatToSay));
+		session.character.writeLnToRoom(String.format("%s says '%s'",session.character.givenName,whatToSay));
 	}
 }

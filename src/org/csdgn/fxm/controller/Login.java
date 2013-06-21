@@ -20,13 +20,13 @@
  *    3. This notice may not be removed or altered from any source
  *    distribution.
  */
-package org.csdgn.fxm.net.msg;
+package org.csdgn.fxm.controller;
 
 import java.io.File;
 import java.util.Arrays;
 
 import org.csdgn.fxm.Config;
-import org.csdgn.fxm.net.MessageHandler;
+import org.csdgn.fxm.net.InputHandler;
 import org.csdgn.fxm.net.Session;
 import org.csdgn.util.CryptUtils;
 import org.csdgn.util.IOUtils;
@@ -39,7 +39,7 @@ import com.google.gson.Gson;
  * @author Chase
  *
  */
-public class LoginHandler implements MessageHandler {
+public class Login implements InputHandler {
 	
 	private static final int MAX_ATTEMPTS = 3;
 	private static String MOTD = null;
@@ -49,8 +49,7 @@ public class LoginHandler implements MessageHandler {
 		LOGIN,
 		PASSWORD,
 		NEW_LOGIN,
-		NEW_PASSWORD,
-		EXIT
+		NEW_PASSWORD
 	};
 	
 	private static final class User {
@@ -119,7 +118,7 @@ public class LoginHandler implements MessageHandler {
 	private String username = "";
 	private int counter = 0;
 	
-	public LoginHandler() {
+	public Login() {
 		File file = new File(Config.FILE_WELCOME);
 		long time = file.lastModified();
 		if(MOTD == null || time > MOTD_TIME) {
@@ -152,9 +151,9 @@ public class LoginHandler implements MessageHandler {
 			break;
 		case PASSWORD:
 			if(checkUser(username,request)) {
-				mode = LoginMode.EXIT;
 				session.username = username;
-				session.writeLn("Press any key to continue.");
+				session.setMessageHandler(new CharacterSelect());
+				return;
 			} else {
 				session.writeLn("Incorrect Login");
 				if(++counter < MAX_ATTEMPTS) {
@@ -179,17 +178,14 @@ public class LoginHandler implements MessageHandler {
 			break;
 		case NEW_PASSWORD:
 			if(checkPassword(request)) {
-				mode = LoginMode.EXIT;
 				createUser(username,request);
 				session.username = username;
-				session.writeLn("Press any key to continue.");
+				session.setMessageHandler(new CharacterSelect());
+				return;
 			} else {
 				session.writeLn("You cannot use that password. Must be at least length 5 and start with a alphanumeric character.");
 				session.write("Password: ");
 			}
-			break;
-		case EXIT:
-			session.setMessageHandler(new CharacterSelectHandler());
 			break;
 		default:
 			session.writeLn("Connection Error.");

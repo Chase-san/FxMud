@@ -20,35 +20,14 @@
  *    3. This notice may not be removed or altered from any source
  *    distribution.
  */
-package org.csdgn.fxm.model;
+package org.csdgn.fxm.cmd;
 
-import org.csdgn.fxm.Server;
+import org.csdgn.fxm.net.Session;
 
-public class Exit {
-	private transient Room target;
-	private String name;
-	private int targetUUID;
-	
-	public Exit(String name, Room room) {
-		this.name = name;
-		this.targetUUID = room.roomUUID;
-		this.target = room;
-	}
-	
-	public Room getTarget() {
-		if(target == null) {
-			//lazy initialize
-			target = Server.world.roomsUUID.get(targetUUID);
-			//TODO if target is still null, throw error?
-		}
-		return target;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public int getTargetUUID() {
-		return targetUUID;
-	}
+public interface Command {
+	/**
+	 * @param session 
+	 * @param input The entire input string (command and all).
+	 */
+	public void execute(Session session, String input);
 }

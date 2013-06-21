@@ -1,16 +1,16 @@
-package org.csdgn.fxm.net.msg;
+package org.csdgn.fxm.controller;
 
 import org.csdgn.fxm.Config;
-import org.csdgn.fxm.net.MessageHandler;
+import org.csdgn.fxm.net.InputHandler;
 import org.csdgn.fxm.net.Session;
-import org.csdgn.fxm.model.Player;
+import org.csdgn.fxm.model.Character;
 import org.csdgn.util.IOUtils;
 
 import com.google.gson.Gson;
 
-public class NewCharacterHandler implements MessageHandler {
-	private Player player = new Player();
-	private StringInputHandler input;
+public class CharacterNew implements InputHandler {
+	private Character character = new Character();
+	private StringInput input;
 	private char inputType = '\0';
 	
 	@Override
@@ -31,11 +31,11 @@ public class NewCharacterHandler implements MessageHandler {
 					displayMenu(session);
 					break;
 				case 'c':
-					if(player.givenName == null) {
+					if(character.givenName == null) {
 						session.writeLn("You must specify a given name.");
 						break;
 					}
-					if(player.familyName == null) {
+					if(character.familyName == null) {
 						session.writeLn("You must specify a family name.");
 						break;
 					}
@@ -48,15 +48,15 @@ public class NewCharacterHandler implements MessageHandler {
 					return;
 				case '0': //Given Name
 					inputType = c;
-					session.pushMessageHandler(input = new StringInputHandler("Given Name: "));
+					session.pushMessageHandler(input = new StringInput("Given Name: "));
 					return;
 				case '1': //Surname
 					inputType = c;
-					session.pushMessageHandler(input = new StringInputHandler("Family Name: "));
+					session.pushMessageHandler(input = new StringInput("Family Name: "));
 					return;
 				case '2':
 					//toggle gender
-					player.isFemale = !player.isFemale;
+					character.isFemale = !character.isFemale;
 					displayMenu(session);
 					break;
 				default:
@@ -85,7 +85,7 @@ public class NewCharacterHandler implements MessageHandler {
 				session.writeLn("Your given name may only have alphabetic characters in it.");
 				break;
 			}
-			player.givenName = Character.toUpperCase(value.charAt(0)) + value.substring(1);
+			character.givenName = java.lang.Character.toUpperCase(value.charAt(0)) + value.substring(1);
 			break;
 		case '1': //Surname
 			if(value.length() < 3) {
@@ -96,7 +96,7 @@ public class NewCharacterHandler implements MessageHandler {
 				session.writeLn("Your family name may only have alphabetic characters in it.");
 				break;
 			}
-			player.familyName = Character.toUpperCase(value.charAt(0)) + value.substring(1);
+			character.familyName = java.lang.Character.toUpperCase(value.charAt(0)) + value.substring(1);
 			break;
 		}
 		
@@ -105,17 +105,17 @@ public class NewCharacterHandler implements MessageHandler {
 	}
 	
 	public void writeCharacter(Session session) {
-		String json = new Gson().toJson(player);
-		String filename = String.format("%s%s/%s_%s", Config.FOLDER_CHARACTER,session.username,player.familyName,player.givenName);
+		String json = new Gson().toJson(character);
+		String filename = String.format("%s%s/%s_%s", Config.FOLDER_CHARACTER,session.username,character.familyName,character.givenName);
 		IOUtils.setFileContents(filename, json);
 	}
 	
 	private void displayMenu(Session session) {
 		session.writeLn("--------------------------------","Create New Character","");
 		
-		session.writeLn(String.format("\t0 - Given Name: %s", player.givenName == null ? "" : player.givenName));
-		session.writeLn(String.format("\t1 - Family Name: %s", player.familyName == null ? "" : player.familyName));
-		session.writeLn(String.format("\t2 - Gender: %s", player.isFemale ? "Female" : "Male"));
+		session.writeLn(String.format("\t0 - Given Name: %s", character.givenName == null ? "" : character.givenName));
+		session.writeLn(String.format("\t1 - Family Name: %s", character.familyName == null ? "" : character.familyName));
+		session.writeLn(String.format("\t2 - Gender: %s", character.isFemale ? "Female" : "Male"));
 		
 		session.writeLn("","\tL - Redisplay Menu","\tC - Create","\tX - Exit","");
 	}

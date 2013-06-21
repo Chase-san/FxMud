@@ -24,7 +24,7 @@ package org.csdgn.fxm.model;
 
 import org.csdgn.fxm.net.Session;
 
-public class Player {
+public class Character {
 	public transient Session session;
 	public transient Room room;
 	public boolean isFemale = false;
@@ -57,7 +57,7 @@ public class Player {
 		}
 		String msg = buf.toString();
 		
-		for(Player p : room.players) {
+		for(Character p : room.players) {
 			if(p == this)
 				continue;
 			p.session.write(msg);

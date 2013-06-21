@@ -63,7 +63,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     @Override
 	public void messageReceived(ChannelHandlerContext ctx, MessageList<Object> msgs) throws Exception {
     	for(Object obj : msgs) {
-    		ctx.attr(SESSION).get().messageReceived((String)obj);
+    		ctx.attr(SESSION).get().received((String)obj);
     	}
 	}
 

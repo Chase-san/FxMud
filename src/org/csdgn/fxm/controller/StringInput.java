@@ -1,9 +1,9 @@
-package org.csdgn.fxm.net.msg;
+package org.csdgn.fxm.controller;
 
-import org.csdgn.fxm.net.MessageHandler;
+import org.csdgn.fxm.net.InputHandler;
 import org.csdgn.fxm.net.Session;
 
-public class StringInputHandler implements MessageHandler {
+public class StringInput implements InputHandler {
 	private String prompt;
 	private String value;
 	
@@ -11,7 +11,7 @@ public class StringInputHandler implements MessageHandler {
 		return value;
 	}
 	
-	public StringInputHandler(String prompt) {
+	public StringInput(String prompt) {
 		this.prompt = prompt;
 	}
 	

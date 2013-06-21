@@ -27,7 +27,7 @@ package org.csdgn.fxm.net;
  * 
  * @author Chase
  */
-public interface MessageHandler {
+public interface InputHandler {
 	/**
 	 * Called when this handler is being entered for the first time.
 	 */
