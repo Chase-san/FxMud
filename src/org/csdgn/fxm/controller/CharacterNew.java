@@ -39,9 +39,10 @@ public class CharacterNew implements InputHandler {
 						break;
 					}
 					
-					session.writeLn("","Character Created!");
+					session.writeLn("Character Created!");
 					
 					//okay, cool, write it
+					character.UUID = (int)(Math.random()*Integer.MAX_VALUE);
 					character.file = new File(getFilename(session));
 					character.save();
 					

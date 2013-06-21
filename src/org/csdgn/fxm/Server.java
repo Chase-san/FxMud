@@ -33,8 +33,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 public class Server {
-	public static World world;
-	
 	public static void main(String[] args) throws Exception {
 		//Set default locale to something sane.
 		Locale.setDefault(Locale.US);
@@ -44,8 +42,7 @@ public class Server {
 		System.setProperty("io.netty.noJavassist", "true");
 		
 		//Load world
-		world = new World();
-		world.loadRooms();
+		World.instance.loadRooms();
 		
 		int port;
 		if (args.length > 0) {

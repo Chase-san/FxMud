@@ -31,6 +31,7 @@ import org.csdgn.fxm.Server;
 import org.csdgn.fxm.net.InputHandler;
 import org.csdgn.fxm.net.Session;
 import org.csdgn.fxm.model.Character;
+import org.csdgn.fxm.model.World;
 import org.csdgn.util.IOUtils;
 
 import com.google.gson.Gson;
@@ -45,7 +46,6 @@ public class CharacterSelect implements InputHandler {
 	private StringInput input;
 	private boolean deleteMode = false;
 	private int start = 0;
-	
 	
 	private void loadCharacters(Session session) {
 		chars.clear();
@@ -105,9 +105,23 @@ public class CharacterSelect implements InputHandler {
 					int index = ((int)c - 48) + start;
 					if(index < entries.size()) {
 						session.character = loadCharacter(entries.get(index));
+						
+						Character tmp = World.instance.getCharacter(session.character.UUID);
+						if(tmp != null) {
+							tmp.session.reconnect();
+							session.character = tmp;
+						}
 						session.character.session = session;
-						Server.world.placeCharacterInRoom(session.character);
-						session.setMessageHandler(Server.world.gameHandler);
+						
+						World.instance.join(session.character);
+						
+						if(session.character.room == null) {
+							World.instance.placeCharacterInRoom(session.character);
+						} else {
+							session.writeLn("Reconnected!");
+						}
+						
+						session.setMessageHandler(World.instance.gameHandler);
 						return;
 					}
 				}

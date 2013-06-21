@@ -39,10 +39,24 @@ import com.google.gson.Gson;
  * @author Chase
  */
 public class World {
+	public static World instance = new World();
+	
 	public InputHandler gameHandler = new Game();
-	public ArrayList<Character> characters = new ArrayList<Character>();
 	public ArrayList<Room> rooms = new ArrayList<Room>();
+	public HashMap<Integer, Character> charUUID = new HashMap<Integer, Character>();
 	public HashMap<Integer, Room> roomsUUID = new HashMap<Integer, Room>();
+	
+	public Character getCharacter(int uuid) {
+		return charUUID.get(uuid);
+	}
+	
+	public void join(Character chara) {
+		charUUID.put(chara.UUID, chara);
+	}
+	
+	public void leave(Character chara) {
+		charUUID.remove(chara.UUID);
+	}
 	
 	/**
 	 * Loads all rooms from file.

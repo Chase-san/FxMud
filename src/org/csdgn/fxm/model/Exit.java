@@ -22,8 +22,6 @@
  */
 package org.csdgn.fxm.model;
 
-import org.csdgn.fxm.Server;
-
 public class Exit {
 	private transient Room target;
 	private String name;
@@ -38,7 +36,7 @@ public class Exit {
 	public Room getTarget() {
 		if(target == null) {
 			//lazy initialize
-			target = Server.world.roomsUUID.get(targetUUID);
+			target = World.instance.roomsUUID.get(targetUUID);
 			//TODO if target is still null, throw error?
 		}
 		return target;

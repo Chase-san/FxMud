@@ -65,6 +65,16 @@ public class Session {
 	}
 	
 	/**
+	 * Called when another session reconnects to the character.
+	 */
+	public synchronized void reconnect() {
+		if(!disconnected) {
+			disconnected = true;
+			channel.disconnect();
+		}
+	}
+	
+	/**
 	 * Forces a message to be interpreted.
 	 */
 	public void force(String request) {

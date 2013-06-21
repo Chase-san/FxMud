@@ -33,10 +33,13 @@ public class Character {
 	public transient Session session;
 	public transient Room room;
 	public transient File file;
+	public int UUID;
 	public boolean isFemale = false;
 	public int roomUUID = -1;
 	public String givenName = null;
 	public String familyName = null;
+	
+	public Character() {}
 	
 	/**
 	 * Saves this character back to file. Seldom use only!
@@ -50,6 +53,7 @@ public class Character {
 	
 	public void quit() {
 		if(room != null) {
+			World.instance.leave(this);
 			writeLnToRoom(String.format("%s has left.", givenName));
 			setRoom(null);
 			save();
