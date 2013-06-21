@@ -37,10 +37,10 @@ public class Character {
 	 */
 	public void setRoom(Room room) {
 		if(this.room != null)
-			this.room.players.remove(this);
+			this.room.characters.remove(this);
 		this.roomUUID = room.roomUUID;
 		this.room = room;
-		this.room.players.add(this);
+		this.room.characters.add(this);
 	}
 	
 	/**
@@ -57,7 +57,7 @@ public class Character {
 		}
 		String msg = buf.toString();
 		
-		for(Character p : room.players) {
+		for(Character p : room.characters) {
 			if(p == this)
 				continue;
 			p.session.write(msg);

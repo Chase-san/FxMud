@@ -32,11 +32,11 @@ public class Room {
 	public String name;
 	public String description;
 	public ArrayList<Exit> exits;
-	public transient HashSet<Character> players;
+	public transient HashSet<Character> characters;
 	
 	public Room() {
 		exits = new ArrayList<Exit>();
-		players = new HashSet<Character>();
+		characters = new HashSet<Character>();
 	}
 	
 	public void displayRoomTo(Session session) {
@@ -60,8 +60,8 @@ public class Room {
 		}
 		
 		//players
-		if(players.size() > 1) {
-			for(Character p : players) {
+		if(characters.size() > 1) {
+			for(Character p : characters) {
 				if(p == session.character)
 					continue;
 				session.write(String.format("%s %s is standing here.", p.givenName, p.familyName));

@@ -27,7 +27,9 @@ import java.util.TreeMap;
 
 import org.csdgn.fxm.cmd.impl.Go;
 import org.csdgn.fxm.cmd.impl.Look;
+import org.csdgn.fxm.cmd.impl.Quit;
 import org.csdgn.fxm.cmd.impl.Say;
+import org.csdgn.fxm.cmd.impl.TypeFullCommand;
 import org.csdgn.fxm.model.Exit;
 import org.csdgn.fxm.model.Room;
 
@@ -41,11 +43,18 @@ public class Interpreter {
 	
 	//special commands
 	public final Say say;
+	private final Command typeFullCmd;
 	
 	public Interpreter() {
+		typeFullCmd = new TypeFullCommand();
 		commands.put("look", new Look());
 		commands.put("say", say = new Say());
 		commands.put("go", new Go());
+		
+		
+		
+		commands.put("qui", typeFullCmd);
+		commands.put("quit", new Quit());
 	}
 	
 	public Command getCommand(String ref) {
