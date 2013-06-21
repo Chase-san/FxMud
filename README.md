@@ -1,6 +1,6 @@
 FxMud is a very simple Java Mud server.
 
-A long time I worked as a programmer on MUDS. I thought it was interesting.
+A long time I worked as a programmer on MUDs. I thought it was interesting.
 These days I muds are probably about dead. But there has always been a part of me that
 always wanted to design a MUD from scratch. At one point I attempted it, but didn't get
 very far at all.
@@ -15,6 +15,7 @@ So I decided to make a clean, small, simple but Complete mud codebase that anyon
 has a love for Java can use.
 
 This mud codebase is currently very BARE BONES.
+
 
 Current State:
 
