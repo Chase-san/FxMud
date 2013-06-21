@@ -1,5 +1,7 @@
 package org.csdgn.fxm.controller;
 
+import java.io.File;
+
 import org.csdgn.fxm.Config;
 import org.csdgn.fxm.net.InputHandler;
 import org.csdgn.fxm.net.Session;
@@ -43,7 +45,9 @@ public class CharacterNew implements InputHandler {
 					session.writeLn("","Character Created!");
 					
 					//okay, cool, write it
-					writeCharacter(session);
+					character.file = new File(getFilename(session));
+					character.save();
+					
 					session.popMessageHandler();
 					return;
 				case '0': //Given Name
@@ -104,10 +108,8 @@ public class CharacterNew implements InputHandler {
 		session.write("Option: ");
 	}
 	
-	public void writeCharacter(Session session) {
-		String json = new Gson().toJson(character);
-		String filename = String.format("%s%s/%s_%s", Config.FOLDER_CHARACTER,session.username,character.familyName,character.givenName);
-		IOUtils.setFileContents(filename, json);
+	public String getFilename(Session session) {
+		return String.format("%s%s/%s_%s", Config.FOLDER_CHARACTER,session.username,character.familyName,character.givenName);
 	}
 	
 	private void displayMenu(Session session) {

@@ -22,15 +22,39 @@
  */
 package org.csdgn.fxm.model;
 
+import java.io.File;
+
 import org.csdgn.fxm.net.Session;
+import org.csdgn.util.IOUtils;
+
+import com.google.gson.Gson;
 
 public class Character {
 	public transient Session session;
 	public transient Room room;
+	public transient File file;
 	public boolean isFemale = false;
 	public int roomUUID = -1;
 	public String givenName = null;
 	public String familyName = null;
+	
+	/**
+	 * Saves this character back to file. Seldom use only!
+	 */
+	public void save() {
+		if(file != null) {
+			String json = new Gson().toJson(this);
+			IOUtils.setFileContents(file, json);
+		}
+	}
+	
+	public void quit() {
+		if(room != null) {
+			writeLnToRoom(String.format("%s has left.", givenName));
+			setRoom(null);
+			save();
+		}
+	}
 	
 	/**
 	 * Sets the players current room.
@@ -38,9 +62,11 @@ public class Character {
 	public void setRoom(Room room) {
 		if(this.room != null)
 			this.room.characters.remove(this);
-		this.roomUUID = room.roomUUID;
 		this.room = room;
-		this.room.characters.add(this);
+		if(room != null) {
+			room.characters.add(this);
+			this.roomUUID = room.roomUUID;
+		}
 	}
 	
 	/**

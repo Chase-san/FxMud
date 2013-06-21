@@ -55,6 +55,8 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
     	Session session = ctx.attr(SESSION).get();
+    	if(!session.disconnected)
+    		session.disconnect();
     	ctx.attr(SESSION).remove();
     	
     	logger.info(session.username + ": " + ctx.channel().remoteAddress() + " disconnected.");

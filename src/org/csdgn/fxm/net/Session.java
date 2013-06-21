@@ -33,11 +33,13 @@ import io.netty.channel.Channel;
 public class Session {
 	private static final Charset ASCII = Charset.forName("US-ASCII");
 
+	protected boolean disconnected = false;
 	protected ArrayDeque<InputHandler> hStack;
 	protected InputHandler handler;
 	protected Channel channel;
 	public Character character;
 	public String username;
+	
 
 	/**
 	 * Creates a new session with the given channel.
@@ -55,7 +57,11 @@ public class Session {
 	 * Disconnects this Session
 	 */
 	public synchronized void disconnect() {
-		channel.disconnect();
+		if(!disconnected) {
+			disconnected = true;
+			channel.disconnect();
+			character.quit();
+		}
 	}
 	
 	/**

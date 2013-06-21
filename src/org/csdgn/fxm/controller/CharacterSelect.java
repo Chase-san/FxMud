@@ -136,7 +136,10 @@ public class CharacterSelect implements InputHandler {
 	}
 	
 	public Character loadCharacter(String entry) {
-		String json = IOUtils.getFileContents(chars.get(entry));
-		return new Gson().fromJson(json,Character.class);
+		File file = chars.get(entry);
+		String json = IOUtils.getFileContents(file);
+		Character chara = new Gson().fromJson(json,Character.class);
+		chara.file = file;
+		return chara;
 	}
 }
