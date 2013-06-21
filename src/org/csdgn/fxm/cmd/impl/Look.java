@@ -33,8 +33,6 @@ public class Look implements Command {
 	public void execute(Session session, String input) {
 		input = StringUtils.getAfter(input, ' ');
 		if(input != null) {
-			//TODO add the ability to look at players
-			
 			//check exits
 			Exit e = Interpreter.findExit(input, session.character.room);
 			if(e != null) {

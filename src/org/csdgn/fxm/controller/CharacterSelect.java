@@ -42,8 +42,10 @@ import com.google.gson.Gson;
 public class CharacterSelect implements InputHandler {
 	private HashMap<String,File> chars = new HashMap<String,File>();
 	private ArrayList<String> entries = new ArrayList<String>();
-	
+	private StringInput input;
+	private boolean deleteMode = false;
 	private int start = 0;
+	
 	
 	private void loadCharacters(Session session) {
 		chars.clear();
@@ -79,6 +81,10 @@ public class CharacterSelect implements InputHandler {
 			case 'x':
 				session.writeLn("","See you later.");
 				session.disconnect();
+				return;
+			case 'd':
+				deleteMode = true;
+				session.pushMessageHandler(input = new StringInput("Delete which? "));
 				return;
 			case '<': //Previous
 				if(start > 0) {
@@ -127,11 +133,30 @@ public class CharacterSelect implements InputHandler {
 			session.writeLn("\t< - Previous");
 		if(start + 10 < entries.size())
 			session.writeLn("\t> - Next");
-		session.writeLn("\tL - Redisplay Menu","\tN - Create New","\tX - Exit","");
+		session.writeLn("\tL - Redisplay Menu","\tD - Delete","\tN - Create New","\tX - Exit","");
 	}
 
 	@Override
 	public void reenter(Session session) {
+		del: if(deleteMode) {
+			String in = input.getValue();
+			if(in.length() == 1) {
+				int c = in.charAt(0);
+				if(c >= 0 && c <= 9) {
+					int index = ((int)c - 48) + start;
+					if(index < entries.size()) {
+						//delete the character :(
+						session.writeLn("Character deleted.");
+						File f = new File(entries.get(index));
+						if(f.exists())
+							f.delete();
+						break del;
+					}
+				}
+			}
+			session.writeLn("I don't know which one that is.");
+		}
+		deleteMode = false;
 		enter(session);
 	}
 	

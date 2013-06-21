@@ -6,9 +6,6 @@ import org.csdgn.fxm.Config;
 import org.csdgn.fxm.net.InputHandler;
 import org.csdgn.fxm.net.Session;
 import org.csdgn.fxm.model.Character;
-import org.csdgn.util.IOUtils;
-
-import com.google.gson.Gson;
 
 public class CharacterNew implements InputHandler {
 	private Character character = new Character();

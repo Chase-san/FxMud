@@ -49,7 +49,6 @@ public class World {
 	 * @throws IOException If there is a read error
 	 */
 	public void loadRooms() throws IOException {
-		//TODO combine rooms into 'area' files that contain multiple rooms
 		for(File f : new File(Config.FOLDER_WORLD).listFiles()) {
 			if('r' == f.getName().charAt(0)) {
 				Room r = loadRoom(f);

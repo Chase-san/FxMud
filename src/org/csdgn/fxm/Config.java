@@ -23,7 +23,6 @@
 package org.csdgn.fxm;
 
 /**
- * TODO Make this configurable from file
  * @author Chase
  */
 public class Config {
