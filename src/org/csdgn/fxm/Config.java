@@ -55,7 +55,7 @@ public class Config {
 						.trim();
 		FOLDER_WORLD = FOLDER_DATABASE
 				+ properties.getProperty("folder.world", "world/").trim();
-		FOLDER_WORLD = FOLDER_DATABASE
+		FILE_WELCOME = FOLDER_DATABASE
 				+ properties.getProperty("file.welcome", "welcome").trim();
 		
 		START_ROOM_UUID = UUID.fromString(properties.getProperty("start.uuid",
