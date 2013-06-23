@@ -37,7 +37,11 @@ public class Go implements Command {
 		
 		Exit targetExit = exit.getRoom().getExit(exit.exitUUID);
 		
-		chara.writeLnToRoom(String.format(customMsg(targetExit.enterMsg,"%s arrives from the %s."), name, targetExit.name));
+		if(targetExit != null) {
+			chara.writeLnToRoom(String.format(customMsg(targetExit.enterMsg,"%s arrives from the %s."), name, targetExit.name));
+		} else {
+			chara.writeLnToRoom(String.format("%s arrives from somewhere.", name));
+		}
 		
 		//Do look
 		session.force("look");
