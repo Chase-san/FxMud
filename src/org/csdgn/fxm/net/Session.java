@@ -27,8 +27,7 @@ import java.util.ArrayDeque;
 
 import org.csdgn.fxm.model.Character;
 import org.csdgn.fxm.net.ctrl.Login;
-
-import io.netty.channel.Channel;
+import org.csdgn.telnet.TelnetSocket;
 
 public class Session {
 	private static final Charset ASCII = Charset.forName("US-ASCII");
@@ -36,7 +35,7 @@ public class Session {
 	protected boolean disconnected = false;
 	protected ArrayDeque<InputHandler> hStack;
 	protected InputHandler handler;
-	protected Channel channel;
+	protected TelnetSocket channel;
 	public Character character;
 	public String username;
 
@@ -46,7 +45,7 @@ public class Session {
 	 * @param chan
 	 *            The channel.
 	 */
-	public Session(Channel chan) {
+	public Session(TelnetSocket chan) {
 		channel = chan;
 		hStack = new ArrayDeque<InputHandler>();
 		setMessageHandler(new Login());

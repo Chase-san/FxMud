@@ -22,49 +22,34 @@
  */
 package org.csdgn.fxm.net;
 
-import io.netty.channel.ChannelHandler.Sharable;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.MessageList;
-import io.netty.util.AttributeKey;
-
+import org.csdgn.telnet.TelnetHandler;
+import org.csdgn.telnet.TelnetSocket;
 
 /**
  * Handles a server-side channel.
  */
-@Sharable
-public class ServerHandler extends ChannelInboundHandlerAdapter {
-    
-    //Change this to Session
-    private static final AttributeKey<Session> SESSION =
-            new AttributeKey<Session>("session");
-    
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        Session session = new Session(ctx.channel());
-        ctx.attr(SESSION).set(session);
-        System.out.println("New connection from " + ctx.channel().remoteAddress() + ".");
-    }
-    
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-    	Session session = ctx.attr(SESSION).get();
-    	if(!session.disconnected)
-    		session.disconnect();
-    	ctx.attr(SESSION).remove();
-    	System.out.println(session.username + ": " + ctx.channel().remoteAddress() + " disconnected.");
-    }
-
-    @Override
-	public void messageReceived(ChannelHandlerContext ctx, MessageList<Object> msgs) throws Exception {
-    	for(Object obj : msgs)
-    		ctx.attr(SESSION).get().received((String)obj);
+public class ServerHandler implements TelnetHandler {
+	private int SESSION_KEY = 35892;
+	@Override
+	public void connected(TelnetSocket sock) {
+		Session session = new Session(sock);
+		sock.put(SESSION_KEY, session);
+        System.out.println("New connection from " + sock.remoteAddress() + ".");
 	}
 
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-    	System.err.println("Unexpected exception from downstream.");
-    	cause.printStackTrace(System.err);
-        ctx.close();
-    }
+	@Override
+	public void disconnected(TelnetSocket sock) {
+		Session session = (Session)sock.get(SESSION_KEY);
+    	if(!session.disconnected)
+    		session.disconnect();
+    	sock.remove(SESSION_KEY);
+    	
+    	System.out.println(session.username + ": " + sock.remoteAddress() + " disconnected.");
+	}
+
+	@Override
+	public void message(TelnetSocket sock, String msg) {
+		Session session = (Session)sock.get(SESSION_KEY);
+    	session.received(msg);
+	}
 }

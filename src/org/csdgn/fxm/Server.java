@@ -25,12 +25,8 @@ package org.csdgn.fxm;
 import java.util.Locale;
 
 import org.csdgn.fxm.model.World;
-import org.csdgn.fxm.net.ServerPipelineFactory;
-
-import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
+import org.csdgn.fxm.net.ServerHandler;
+import org.csdgn.telnet.TelnetServer;
 
 public class Server {
 	public static void main(String[] args) throws Exception {
@@ -69,22 +65,8 @@ public class Server {
 	}
 	
 	public void run() throws Exception {
-		EventLoopGroup owner = new NioEventLoopGroup();
-		EventLoopGroup worker = new NioEventLoopGroup();
-		try {
-			ServerBootstrap b = new ServerBootstrap()
-				.group(owner, worker)
-				.channel(NioServerSocketChannel.class)
-				.childHandler(new ServerPipelineFactory());
-
-			b.bind(port)
-				.sync()
-				.channel()
-				.closeFuture()
-				.sync();
-		} finally {
-			owner.shutdownGracefully();
-			worker.shutdownGracefully();
-		}
+		TelnetServer server = new TelnetServer(port);
+		server.addSocketHandler(new ServerHandler());
+		server.start();
 	}
 }
