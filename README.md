@@ -19,7 +19,6 @@ I seek to resolve this problem.
 ### Required Libraries
 FxMud uses a few minor libraries. Mainly for tasks that would otherwise be complicated.
 
-* [__Netty-4.0.0.CR6__](http://netty.io/) - More recent versions 'should' work.
 * [__Gson-2.2.4__](https://code.google.com/p/google-gson/) - But any recent version will work.
 
 ### About the Author
