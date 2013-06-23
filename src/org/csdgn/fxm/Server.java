@@ -41,7 +41,12 @@ public class Server {
 		//This prevents an error being thrown.
 		System.setProperty("io.netty.noJavassist", "true");
 		
+		//Load Configuration
+		System.out.println("Loading configuration.");
+		Config.loadConfiguration();
+		
 		//Load world
+		System.out.println("Loading world.");
 		World.instance.loadWorld();
 		
 		int port;

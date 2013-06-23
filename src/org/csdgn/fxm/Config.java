@@ -22,17 +22,42 @@
  */
 package org.csdgn.fxm;
 
+import java.io.FileReader;
+import java.util.Properties;
 import java.util.UUID;
 
 /**
  * @author Chase
  */
 public class Config {
-	public static final String FOLDER_DATABASE = "db/";
-	public static final String FOLDER_USER = FOLDER_DATABASE  + "user/";
-	public static final String FOLDER_CHARACTER = FOLDER_DATABASE  + "characters/";
-	public static final String FOLDER_WORLD = FOLDER_DATABASE  + "world/";
-	public static final String FILE_WELCOME = FOLDER_DATABASE  + "welcome";
-	/** Temporary Solution */
-	public static final UUID START_ROOM_UUID = UUID.fromString("c58c7c53-7722-4e40-a649-375b6e199a8f");
+	public static String FOLDER_DATABASE = null;
+	public static String FOLDER_USER = null;
+	public static String FOLDER_CHARACTER = null;
+	public static String FOLDER_WORLD = null;
+	public static String FILE_WELCOME = null;
+	public static UUID START_ROOM_UUID = null;
+
+	public static void loadConfiguration() {
+		Properties properties = new Properties();
+		
+		try {
+			properties.load(new FileReader("config.properties"));
+		} catch(Exception e) {
+			System.out.println("Warning: Failed to load configuration file, using defaults.");
+		}
+
+		FOLDER_DATABASE = properties.getProperty("folder.db", "db/").trim();
+		FOLDER_USER = FOLDER_DATABASE
+				+ properties.getProperty("folder.user", "user/").trim();
+		FOLDER_CHARACTER = FOLDER_DATABASE
+				+ properties.getProperty("folder.character", "characters/")
+						.trim();
+		FOLDER_WORLD = FOLDER_DATABASE
+				+ properties.getProperty("folder.world", "world/").trim();
+		FOLDER_WORLD = FOLDER_DATABASE
+				+ properties.getProperty("file.welcome", "welcome").trim();
+		START_ROOM_UUID = UUID.fromString(properties.getProperty("start.uuid",
+				"00000000-0000-0000-0000-000000000000").trim());
+	}
+
 }
