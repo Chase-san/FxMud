@@ -74,7 +74,7 @@ public class Interpreter {
 	public static Exit findExit(String base, Room room) {
 		base = base.trim().toLowerCase();
 		for(Exit e : room.exits) {
-			if(e.getName().startsWith(base)) {
+			if(e.name.startsWith(base)) {
 				return e;
 			}
 		}

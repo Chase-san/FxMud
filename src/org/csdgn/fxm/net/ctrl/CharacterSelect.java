@@ -20,49 +20,32 @@
  *    3. This notice may not be removed or altered from any source
  *    distribution.
  */
-package org.csdgn.fxm.controller;
+package org.csdgn.fxm.net.ctrl;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
 
-import org.csdgn.fxm.Config;
-import org.csdgn.fxm.Server;
 import org.csdgn.fxm.net.InputHandler;
 import org.csdgn.fxm.net.Session;
+import org.csdgn.fxm.net.User;
 import org.csdgn.fxm.model.Character;
 import org.csdgn.fxm.model.World;
-import org.csdgn.util.IOUtils;
-
-import com.google.gson.Gson;
 
 /**
  * 
  * @author Chase
  */
 public class CharacterSelect implements InputHandler {
-	private HashMap<String,File> chars = new HashMap<String,File>();
-	private ArrayList<String> entries = new ArrayList<String>();
 	private StringInput input;
 	private boolean deleteMode = false;
 	private int start = 0;
+	private User user;
 	
-	private void loadCharacters(Session session) {
-		chars.clear();
-		entries.clear();
-		
-		File dir = new File(Config.FOLDER_CHARACTER + session.username + "/");
-		for(File f : dir.listFiles()) {
-			String name = f.getName().replace("_", ", ");
-			//get file names as character names
-			chars.put(name,f);
-			entries.add(name);
-		}
+	public CharacterSelect(User user) {
+		this.user = user;
 	}
 	
 	@Override
 	public void enter(Session session) {
-		loadCharacters(session);
 		displayMenu(session);
 		session.write("Option: ");
 	}
@@ -76,7 +59,7 @@ public class CharacterSelect implements InputHandler {
 				displayMenu(session);
 				break;
 			case 'n': //New Character
-				session.pushMessageHandler(new CharacterNew());
+				session.pushMessageHandler(new CharacterNew(user));
 				return;
 			case 'x':
 				session.writeLn("","See you later.");
@@ -95,7 +78,7 @@ public class CharacterSelect implements InputHandler {
 				}
 				break;
 			case '>': //Next
-				if('>' == c && start + 10 < entries.size()) {
+				if('>' == c && start + 10 < user.size()) {
 					start += 10;
 					displayMenu(session);
 				}
@@ -103,10 +86,12 @@ public class CharacterSelect implements InputHandler {
 			default:
 				if(c >= '0' && c <= '9') {
 					int index = ((int)c - 48) + start;
-					if(index < entries.size()) {
-						session.character = loadCharacter(entries.get(index));
+					if(index < user.size()) {
+						session.character = Character.load(user.get(index).uuid);
 						
-						Character tmp = World.instance.getCharacter(session.character.UUID);
+						
+						Character tmp = World.instance.getCharacter(session.character.uuid);
+						
 						if(tmp != null) {
 							tmp.session.reconnect();
 							session.character = tmp;
@@ -138,30 +123,34 @@ public class CharacterSelect implements InputHandler {
 	private void displayMenu(Session session) {
 		session.writeLn("--------------------------------","Character Select","");
 		
-		for(int i = start; i < entries.size() && i < start + 10; ++i) {
+		for(int i = start; i < user.size() && i < start + 10; ++i) {
 			int index = i - start;
-			session.writeLn(String.format("\t%d - %s", index, entries.get(i)));
+			session.writeLn(String.format("\t%d - %s", index, user.get(i).name ));
 		}
 		session.writeLn();
 		if(start > 0)
 			session.writeLn("\t< - Previous");
-		if(start + 10 < entries.size())
+		if(start + 10 < user.size())
 			session.writeLn("\t> - Next");
 		session.writeLn("\tL - Redisplay Menu","\tD - Delete","\tN - Create New","\tX - Exit","");
 	}
 
 	@Override
 	public void reenter(Session session) {
+		//TODO add validation of deletion
 		del: if(deleteMode) {
 			String in = input.getValue();
 			if(in.length() == 1) {
 				int c = in.charAt(0);
 				if(c >= 0 && c <= 9) {
 					int index = ((int)c - 48) + start;
-					if(index < entries.size()) {
+					if(index < user.size()) {
 						//delete the character :(
 						session.writeLn("Character deleted.");
-						File f = new File(entries.get(index));
+						
+						user.removeCharacter(user.get(index).uuid);
+						
+						File f = Character.getFile(user.get(index).uuid);
 						if(f.exists())
 							f.delete();
 						break del;
@@ -174,11 +163,5 @@ public class CharacterSelect implements InputHandler {
 		enter(session);
 	}
 	
-	public Character loadCharacter(String entry) {
-		File file = chars.get(entry);
-		String json = IOUtils.getFileContents(file);
-		Character chara = new Gson().fromJson(json,Character.class);
-		chara.file = file;
-		return chara;
-	}
+	
 }

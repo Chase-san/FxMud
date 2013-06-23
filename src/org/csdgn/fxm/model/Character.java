@@ -23,32 +23,44 @@
 package org.csdgn.fxm.model;
 
 import java.io.File;
+import java.util.UUID;
 
+import org.csdgn.fxm.Config;
 import org.csdgn.fxm.net.Session;
 import org.csdgn.util.IOUtils;
 
 import com.google.gson.Gson;
 
-public class Character {
+public class Character extends Thing {
 	public transient Session session;
 	public transient Room room;
-	public transient File file;
-	public int UUID;
+	public UUID roomUUID;
 	public boolean isFemale = false;
-	public int roomUUID = -1;
 	public String givenName = null;
 	public String familyName = null;
 	
-	public Character() {}
+	public Character() {
+		uuid = null;
+		roomUUID = null;
+	}
 	
 	/**
 	 * Saves this character back to file. Seldom use only!
 	 */
 	public void save() {
-		if(file != null) {
-			String json = new Gson().toJson(this);
-			IOUtils.setFileContents(file, json);
-		}
+		String json = new Gson().toJson(this);
+		IOUtils.setFileContents(Config.FOLDER_CHARACTER + uuid.toString(), json);
+	}
+	
+	public static File getFile(UUID uuid) {
+		return new File(Config.FOLDER_CHARACTER + uuid.toString());
+	}
+	
+	public static Character load(UUID uuid) {
+		File file = getFile(uuid);
+		String json = IOUtils.getFileContents(file);
+		Character chara = new Gson().fromJson(json,Character.class);
+		return chara;
 	}
 	
 	public void quit() {
@@ -69,7 +81,7 @@ public class Character {
 		this.room = room;
 		if(room != null) {
 			room.characters.add(this);
-			this.roomUUID = room.roomUUID;
+			this.roomUUID = room.uuid;
 		}
 	}
 	

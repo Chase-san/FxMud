@@ -25,8 +25,8 @@ package org.csdgn.fxm.net;
 import java.nio.charset.Charset;
 import java.util.ArrayDeque;
 
-import org.csdgn.fxm.controller.Login;
 import org.csdgn.fxm.model.Character;
+import org.csdgn.fxm.net.ctrl.Login;
 
 import io.netty.channel.Channel;
 
@@ -39,7 +39,6 @@ public class Session {
 	protected Channel channel;
 	public Character character;
 	public String username;
-	
 
 	/**
 	 * Creates a new session with the given channel.

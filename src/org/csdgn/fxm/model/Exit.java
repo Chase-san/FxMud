@@ -22,31 +22,28 @@
  */
 package org.csdgn.fxm.model;
 
-public class Exit {
-	private transient Room target;
-	private String name;
-	private int targetUUID;
+import java.util.UUID;
+
+public class Exit extends Thing {
+	private transient Room room;
+	public String name;
+	public String customExit;
+	public String customEnter;
+	public UUID roomUUID;
+	public UUID exitUUID;
 	
 	public Exit(String name, Room room) {
 		this.name = name;
-		this.targetUUID = room.roomUUID;
-		this.target = room;
+		this.roomUUID = room.uuid;
+		this.room = room;
 	}
 	
-	public Room getTarget() {
-		if(target == null) {
+	public Room getRoom() {
+		if(room == null) {
 			//lazy initialize
-			target = World.instance.roomsUUID.get(targetUUID);
+			room = World.instance.getRoomByUUID(roomUUID);			
 			//TODO if target is still null, throw error?
 		}
-		return target;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public int getTargetUUID() {
-		return targetUUID;
+		return room;
 	}
 }

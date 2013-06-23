@@ -1,0 +1,81 @@
+heavy
+lean
+----
+thin
+big
+----
+short
+tall
+----
+young
+mature
+old
+----
+man
+woman
+boy
+girl
+----
+pretty
+ugly
+----
+lovely
+disgusting
+
+SIZE ---
+tiny	(animal/baby sized)
+small	(child sized)
+medium	(adult sized)
+large	(giant sized)
+
+
+EYE ----
+
+blue
+blue
+blue
+green
+hazel
+white
+gold
+violet
+purple
+black
+brown
+
++ light
++ dark
+
+
+HAIR ----
+white
+
+gray
+silver
+
+blonde
+sandy blonde
+strawberry blonde
+dirty blonde
+platinum blonde
+
+red
+auburn
+copper
+ginger
+orange
+
+brown
+chestnut
+walnut
+golden brown
+ash brown
+
+black
+
+
+HAIR STYLE ----
+messy
+neat
+mousy
+grizzled

@@ -28,12 +28,11 @@ public class Go implements Command {
 	public void doGo(Session session, Exit exit) {
 		Character chara = session.character;
 		String name = chara.givenName;
-		String exitName = exit.getName();
 		
-		chara.writeLnToRoom(String.format("%s moves %s.", name, exitName));
-		session.writeLn(String.format("You move %s.",exitName));
+		chara.writeLnToRoom(String.format("%s moves %s.", name, exit.name));
+		session.writeLn(String.format("You move %s.", exit.name));
 		
-		chara.setRoom(exit.getTarget());
+		chara.setRoom(exit.getRoom());
 		
 		//TODO find some way to pair exits so we can get the nicer "X arrives from Y"
 		chara.writeLnToRoom(String.format("%s arrives.", name));

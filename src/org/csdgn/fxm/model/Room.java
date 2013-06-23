@@ -27,14 +27,14 @@ import java.util.HashSet;
 
 import org.csdgn.fxm.net.Session;
 
-public class Room {
-	public int roomUUID;
+public class Room extends Thing {
 	public String name;
 	public String description;
 	public ArrayList<Exit> exits;
 	public transient HashSet<Character> characters;
 	
 	public Room() {
+		uuid = null;
 		exits = new ArrayList<Exit>();
 		characters = new HashSet<Character>();
 	}
@@ -53,7 +53,7 @@ public class Room {
 						session.write(", ");
 					}
 				}
-				session.write(exits.get(i).getName());
+				session.write(exits.get(i).name);
 			}
 			session.write(".");
 			session.writeLn();

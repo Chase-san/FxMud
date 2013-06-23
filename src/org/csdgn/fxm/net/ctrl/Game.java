@@ -20,7 +20,7 @@
  *    3. This notice may not be removed or altered from any source
  *    distribution.
  */
-package org.csdgn.fxm.controller;
+package org.csdgn.fxm.net.ctrl;
 
 import java.util.HashMap;
 
@@ -41,6 +41,8 @@ public class Game implements InputHandler {
 		directionAlias.put("s", "go south");
 		directionAlias.put("e", "go east");
 		directionAlias.put("w", "go west");
+		directionAlias.put("d", "go down");
+		directionAlias.put("u", "go up");
 	}
 	
 	@Override

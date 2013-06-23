@@ -1,16 +1,21 @@
-package org.csdgn.fxm.controller;
+package org.csdgn.fxm.net.ctrl;
 
-import java.io.File;
-
-import org.csdgn.fxm.Config;
+import java.util.UUID;
 import org.csdgn.fxm.net.InputHandler;
 import org.csdgn.fxm.net.Session;
+import org.csdgn.fxm.net.User;
 import org.csdgn.fxm.model.Character;
 
 public class CharacterNew implements InputHandler {
 	private Character character = new Character();
 	private StringInput input;
 	private char inputType = '\0';
+	
+	private User user;
+	
+	public CharacterNew(User user) {
+		this.user = user;
+	}
 	
 	@Override
 	public void enter(Session session) {
@@ -42,10 +47,12 @@ public class CharacterNew implements InputHandler {
 					session.writeLn("Character Created!");
 					
 					//okay, cool, write it
-					character.UUID = (int)(Math.random()*Integer.MAX_VALUE);
-					character.file = new File(getFilename(session));
+					character.uuid = UUID.randomUUID();
 					character.save();
 					
+					user.addCharacter(character);
+					user.save();
+										
 					session.popMessageHandler();
 					return;
 				case '0': //Given Name
@@ -104,10 +111,6 @@ public class CharacterNew implements InputHandler {
 		
 		displayMenu(session);
 		session.write("Option: ");
-	}
-	
-	public String getFilename(Session session) {
-		return String.format("%s%s/%s_%s", Config.FOLDER_CHARACTER,session.username,character.familyName,character.givenName);
 	}
 	
 	private void displayMenu(Session session) {

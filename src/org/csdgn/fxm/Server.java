@@ -42,7 +42,7 @@ public class Server {
 		System.setProperty("io.netty.noJavassist", "true");
 		
 		//Load world
-		World.instance.loadRooms();
+		World.instance.loadWorld();
 		
 		int port;
 		if (args.length > 0) {

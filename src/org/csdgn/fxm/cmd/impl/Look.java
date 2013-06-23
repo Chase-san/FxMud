@@ -36,9 +36,9 @@ public class Look implements Command {
 			//check exits
 			Exit e = Interpreter.findExit(input, session.character.room);
 			if(e != null) {
-				session.writeLn("You peer " + e.getName());
+				session.writeLn("You peer " + e.name);
 				
-				e.getTarget().displayRoomTo(session);
+				e.getRoom().displayRoomTo(session);
 			} else {
 				session.writeLn("You don't see that here.");
 			}

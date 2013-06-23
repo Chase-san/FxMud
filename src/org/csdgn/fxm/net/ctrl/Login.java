@@ -20,19 +20,14 @@
  *    3. This notice may not be removed or altered from any source
  *    distribution.
  */
-package org.csdgn.fxm.controller;
+package org.csdgn.fxm.net.ctrl;
 
 import java.io.File;
-import java.util.Arrays;
-
 import org.csdgn.fxm.Config;
 import org.csdgn.fxm.net.InputHandler;
 import org.csdgn.fxm.net.Session;
-import org.csdgn.util.CryptUtils;
+import org.csdgn.fxm.net.User;
 import org.csdgn.util.IOUtils;
-import org.csdgn.util.StringUtils;
-
-import com.google.gson.Gson;
 
 /**
  * This class is a mess. I am so sorry. But its the best I could do at the time.
@@ -40,7 +35,6 @@ import com.google.gson.Gson;
  *
  */
 public class Login implements InputHandler {
-	
 	private static final int MAX_ATTEMPTS = 3;
 	private static String MOTD = null;
 	private static long MOTD_TIME = 0;
@@ -50,12 +44,6 @@ public class Login implements InputHandler {
 		PASSWORD,
 		NEW_LOGIN,
 		NEW_PASSWORD
-	};
-	
-	private static final class User {
-		public String username;
-		public String hash;
-		public String salt;
 	};
 	
 	/**
@@ -81,41 +69,8 @@ public class Login implements InputHandler {
 		return true;
 	}
 	
-	private static final boolean checkUser(String username, String password) {
-		File file = new File(Config.FOLDER_USER + username);
-		if(!file.exists())
-			return false;
-		
-		User usr = new Gson().fromJson(IOUtils.getFileContents(file), User.class);
-		if(!username.equalsIgnoreCase(usr.username))
-			return false;
-		byte[] checkHash = StringUtils.hexStringToBytes(usr.hash);
-		byte[] salt = StringUtils.hexStringToBytes(usr.salt);
-		byte[] hash = CryptUtils.hash(password,salt);
-		if(Arrays.equals(checkHash, hash))
-			return true;
-		return false;
-	}
-	
-	private static final void createUser(String username, String password) {
-		User usr = new User();
-		usr.username = username;
-		byte[] salt = CryptUtils.generateSalt(16);
-		byte[] hash = CryptUtils.hash(password, salt);
-		usr.hash = StringUtils.bytesToHexString(hash);
-		usr.salt = StringUtils.bytesToHexString(salt);
-		
-		IOUtils.setFileContents(Config.FOLDER_USER + username, new Gson().toJson(usr, User.class));
-			
-		//create the folder
-		File char_folder = new File(Config.FOLDER_CHARACTER + usr.username);
-		if(!char_folder.mkdir()) {
-			//TODO fail to create user!
-		}
-	}
-	
+	private User user;
 	private LoginMode mode = LoginMode.LOGIN;
-	private String username = "";
 	private int counter = 0;
 	
 	public Login() {
@@ -145,14 +100,21 @@ public class Login implements InputHandler {
 				mode = LoginMode.NEW_LOGIN;
 				break;
 			}
-			username = request.toLowerCase();
-			session.write("Password: ");
-			mode = LoginMode.PASSWORD;
+			//check username
+			user = User.load(request.toLowerCase());
+			
+			if(user != null) {
+				session.write("Password: ");
+				mode = LoginMode.PASSWORD;
+			} else {
+				session.writeLn("Invalid Username");
+				session.write("Login: ");
+			}
 			break;
 		case PASSWORD:
-			if(checkUser(username,request)) {
-				session.username = username;
-				session.setMessageHandler(new CharacterSelect());
+			if(user.testPassword(request)) {
+				toCharacterSelect(session);
+				
 				return;
 			} else {
 				session.writeLn("Incorrect Login");
@@ -165,10 +127,13 @@ public class Login implements InputHandler {
 				}
 			}
 			break;
-		case NEW_LOGIN:
-			//check username for usage
-			username = request.toLowerCase();
-			if(checkUsername(username)) {
+		case NEW_LOGIN: {
+			String username = request.toLowerCase();
+			if(checkUsername(username)
+			&& null == User.load(request.toLowerCase())) {
+				user = new User();
+				user.username = username;
+				
 				mode = LoginMode.NEW_PASSWORD;
 				session.write("Password: ");
 			} else {
@@ -176,11 +141,12 @@ public class Login implements InputHandler {
 				session.write("Username: ");
 			}
 			break;
+		}
 		case NEW_PASSWORD:
 			if(checkPassword(request)) {
-				createUser(username,request);
-				session.username = username;
-				session.setMessageHandler(new CharacterSelect());
+				user.setPassword(request);
+				user.save();
+				toCharacterSelect(session);
 				return;
 			} else {
 				session.writeLn("You cannot use that password. Must be at least length 5 and start with a alphanumeric character.");
@@ -191,6 +157,11 @@ public class Login implements InputHandler {
 			session.writeLn("Connection Error.");
 			session.disconnect();
 		}
+	}
+	
+	private void toCharacterSelect(Session session) {
+		session.username = user.username;
+		session.setMessageHandler(new CharacterSelect(user));
 	}
 
 	@Override

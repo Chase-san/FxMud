@@ -26,13 +26,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
-import org.csdgn.fxm.Config;
-import org.csdgn.fxm.controller.Game;
 import org.csdgn.fxm.net.InputHandler;
-import org.csdgn.util.IOUtils;
-
-import com.google.gson.Gson;
+import org.csdgn.fxm.net.ctrl.Game;
 
 /**
  * Tracks game data.
@@ -40,40 +37,38 @@ import com.google.gson.Gson;
  */
 public class World {
 	public static World instance = new World();
-	
 	public InputHandler gameHandler = new Game();
-	public ArrayList<Room> rooms = new ArrayList<Room>();
-	public HashMap<Integer, Character> charUUID = new HashMap<Integer, Character>();
-	public HashMap<Integer, Room> roomsUUID = new HashMap<Integer, Room>();
+	public HashMap<UUID, Character> charUUID = new HashMap<UUID, Character>();
+	public ArrayList<Area> areas = new ArrayList<Area>();
 	
-	public Character getCharacter(int uuid) {
+	public Character getCharacter(UUID uuid) {
 		return charUUID.get(uuid);
 	}
 	
 	public void join(Character chara) {
-		charUUID.put(chara.UUID, chara);
+		charUUID.put(chara.uuid, chara);
 	}
 	
 	public void leave(Character chara) {
-		charUUID.remove(chara.UUID);
+		charUUID.remove(chara.uuid);
+	}
+	
+	public Room getRoomByUUID(UUID uuid) {
+		for(Area a : areas) {
+			Room r = a.getRoomByUUID(uuid);
+			if(r != null)
+				return r;
+		}
+		return null;
 	}
 	
 	/**
 	 * Loads all rooms from file.
 	 * @throws IOException If there is a read error
 	 */
-	public void loadRooms() throws IOException {
-		for(File f : new File(Config.FOLDER_WORLD).listFiles()) {
-			if('r' == f.getName().charAt(0)) {
-				Room r = loadRoom(f);
-				rooms.add(r);
-				roomsUUID.put(r.roomUUID, r);
-			}
-			//We will support 'a' eventually as well, for areas. Which are just lists of rooms.
-		}
-		
-		if(rooms.size() == 0) {
-			throw new RuntimeException("No rooms found! This is a problem!");
+	public void loadWorld() throws IOException {
+		for(File f : Area.getAreaList()) {
+			areas.add(Area.load(f));
 		}
 	}
 	
@@ -81,19 +76,31 @@ public class World {
 	 * Places the character in the room referenced in its roomUUID.
 	 */
 	public void placeCharacterInRoom(Character chara) {
-		Room r = roomsUUID.get(chara.roomUUID);
+		Room r = getRoomByUUID(chara.roomUUID);
 		if(r == null) {
-			r = roomsUUID.get(0);
-			//TODO if this is still null, throw error?
+			r = getStartRoom();
 		}
 		chara.setRoom(r);
 	}
 	
-	private void saveRoom(Room room) {
-		IOUtils.setFileContents(Config.FOLDER_WORLD + 'r' + room.roomUUID, new Gson().toJson(room));
-	}
+	//Temporary
+	private Room startRoom = null;
 	
-	private Room loadRoom(File file) {
-		return new Gson().fromJson(IOUtils.getFileContents(file), Room.class);
+	public Room getStartRoom() {
+		if(areas.size() == 0) {
+			Area area = new Area();
+			Room room = new Room();
+			
+			room.name = "Start Room";
+			room.description = "The room where all things being.";
+			room.uuid = UUID.randomUUID();
+			
+			area.addRoom(room);
+			
+			areas.add(area);
+			
+			return startRoom = room;
+		}
+		return startRoom;
 	}
 }

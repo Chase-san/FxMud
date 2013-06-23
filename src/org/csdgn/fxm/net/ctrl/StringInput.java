@@ -1,4 +1,4 @@
-package org.csdgn.fxm.controller;
+package org.csdgn.fxm.net.ctrl;
 
 import org.csdgn.fxm.net.InputHandler;
 import org.csdgn.fxm.net.Session;
