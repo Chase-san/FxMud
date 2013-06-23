@@ -1,5 +1,5 @@
 # FxMud
-FxMud is a very simple and custom Java Mud server codebase.
+FxMud is a very simple and custom Java Mud server.
 
 ### Download
 This project is currently deployed on [Bintray](https://bintray.com/).
