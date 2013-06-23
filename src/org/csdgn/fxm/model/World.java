@@ -38,9 +38,15 @@ import org.csdgn.fxm.net.ctrl.Game;
  */
 public class World {
 	public static World instance = new World();
-	public InputHandler gameHandler = new Game();
-	public HashMap<UUID, Character> charUUID = new HashMap<UUID, Character>();
-	public ArrayList<Area> areas = new ArrayList<Area>();
+	public InputHandler gameHandler;
+	public HashMap<UUID, Character> charUUID;
+	public ArrayList<Area> areas;
+	
+	public World() {
+		gameHandler = new Game();
+		charUUID = new HashMap<UUID, Character>();
+		areas = new ArrayList<Area>();
+	}
 	
 	public Character getCharacter(UUID uuid) {
 		return charUUID.get(uuid);
