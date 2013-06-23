@@ -22,6 +22,7 @@
  */
 package org.csdgn.fxm;
 
+import java.io.File;
 import java.io.FileReader;
 import java.util.Properties;
 import java.util.UUID;
@@ -56,8 +57,16 @@ public class Config {
 				+ properties.getProperty("folder.world", "world/").trim();
 		FOLDER_WORLD = FOLDER_DATABASE
 				+ properties.getProperty("file.welcome", "welcome").trim();
+		
 		START_ROOM_UUID = UUID.fromString(properties.getProperty("start.uuid",
 				"00000000-0000-0000-0000-000000000000").trim());
+	}
+	
+	public static void createMissingFolders() {
+		new File(FOLDER_DATABASE).mkdir();
+		new File(FOLDER_USER).mkdir();
+		new File(FOLDER_CHARACTER).mkdir();
+		new File(FOLDER_WORLD).mkdir();
 	}
 
 }

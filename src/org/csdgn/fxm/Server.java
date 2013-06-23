@@ -44,6 +44,7 @@ public class Server {
 		//Load Configuration
 		System.out.println("Loading configuration.");
 		Config.loadConfiguration();
+		Config.createMissingFolders();
 		
 		//Load world
 		System.out.println("Loading world.");
