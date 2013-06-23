@@ -26,19 +26,14 @@ import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.MessageList;
-//import io.netty.channel.ChannelInboundMessageHandlerAdapter;
 import io.netty.util.AttributeKey;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Handles a server-side channel.
  */
 @Sharable
 public class ServerHandler extends ChannelInboundHandlerAdapter {
-    private static final Logger logger = Logger.getLogger(
-            ServerHandler.class.getName());
     
     //Change this to Session
     private static final AttributeKey<Session> SESSION =
@@ -48,8 +43,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Session session = new Session(ctx.channel());
         ctx.attr(SESSION).set(session);
-        
-        logger.info("New connection from " + ctx.channel().remoteAddress() + ".");
+        System.out.println("New connection from " + ctx.channel().remoteAddress() + ".");
     }
     
     @Override
@@ -58,20 +52,19 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     	if(!session.disconnected)
     		session.disconnect();
     	ctx.attr(SESSION).remove();
-    	
-    	logger.info(session.username + ": " + ctx.channel().remoteAddress() + " disconnected.");
+    	System.out.println(session.username + ": " + ctx.channel().remoteAddress() + " disconnected.");
     }
 
     @Override
 	public void messageReceived(ChannelHandlerContext ctx, MessageList<Object> msgs) throws Exception {
-    	for(Object obj : msgs) {
+    	for(Object obj : msgs)
     		ctx.attr(SESSION).get().received((String)obj);
-    	}
 	}
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.log(Level.WARNING, "Unexpected exception from downstream.", cause);
+    	System.err.println("Unexpected exception from downstream.");
+    	cause.printStackTrace(System.err);
         ctx.close();
     }
 }

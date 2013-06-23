@@ -79,9 +79,8 @@ public class World {
 	 */
 	public void placeCharacterInRoom(Character chara) {
 		Room r = getRoomByUUID(chara.roomUUID);
-		if(r == null) {
+		if(r == null)
 			r = getStartRoom();
-		}
 		chara.setRoom(r);
 	}
 	
