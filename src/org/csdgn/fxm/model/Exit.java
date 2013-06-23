@@ -26,16 +26,29 @@ import java.util.UUID;
 
 public class Exit extends Thing {
 	private transient Room room;
+	/** The name of this exit, used in the go statement to travel along it. E.g. "go north" where this is named "north" */
 	public String name;
-	public String customExit;
-	public String customEnter;
+	
+	/** Custom exit message, %1$s = character name, %2$s = exit name. E.g. "%1$s walks through a clearing to the %2$s." */
+	public String exitMsg;
+	/** Custom enter message, %1$s = character name, %2$s = exit name. E.g. "%1$s arrives from a clearing to the %2$s." */
+	public String enterMsg;
+	/** Custom exit message for first person, %s = exit name. E.g. "You walk %s." */
+	public String travelMsg;
+	
+	/** UUID of target room */
 	public UUID roomUUID;
+	/** UUID of matching exit in target room. */
 	public UUID exitUUID;
 	
-	public Exit(String name, Room room) {
+	public Exit(String name, Room targetRoom) {
+		uuid = UUID.randomUUID();
 		this.name = name;
-		this.roomUUID = room.uuid;
-		this.room = room;
+		this.roomUUID = targetRoom.uuid;
+		this.room = targetRoom;
+		travelMsg = null;
+		enterMsg = null;
+		exitMsg = null;
 	}
 	
 	public Room getRoom() {
@@ -45,5 +58,19 @@ public class Exit extends Thing {
 			//TODO if target is still null, throw error?
 		}
 		return room;
+	}
+	
+	public static Exit[] createLinkedExits(String name1, Room room1, String name2, Room room2) {
+		Exit[] exits = new Exit[2];
+		exits[0] = new Exit(name1, room2);
+		exits[1] = new Exit(name2, room1);
+
+		exits[0].exitUUID = exits[1].uuid;
+		exits[1].exitUUID = exits[0].uuid;
+		
+		room1.exits.add(exits[0]);
+		room2.exits.add(exits[1]);
+		
+		return exits;
 	}
 }

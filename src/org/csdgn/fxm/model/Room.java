@@ -24,6 +24,7 @@ package org.csdgn.fxm.model;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.UUID;
 
 import org.csdgn.fxm.net.Session;
 
@@ -40,7 +41,7 @@ public class Room extends Thing {
 	}
 	
 	public void displayRoomTo(Session session) {
-		session.writeLn("",name + "--",description);
+		session.writeLn("",name + "-",description);
 		
 		int exitCount = exits.size(); 
 		if(exitCount > 0) {
@@ -67,5 +68,12 @@ public class Room extends Thing {
 				session.write(String.format("%s %s is standing here.", p.givenName, p.familyName));
 			}
 		}
+	}
+	
+	public Exit getExit(UUID uuid) {
+		for(Exit ex : exits)
+			if(ex.uuid == uuid)
+				return ex;
+		return null;
 	}
 }

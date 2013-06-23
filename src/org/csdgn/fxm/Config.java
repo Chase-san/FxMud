@@ -22,6 +22,8 @@
  */
 package org.csdgn.fxm;
 
+import java.util.UUID;
+
 /**
  * @author Chase
  */
@@ -30,6 +32,7 @@ public class Config {
 	public static final String FOLDER_USER = FOLDER_DATABASE  + "user/";
 	public static final String FOLDER_CHARACTER = FOLDER_DATABASE  + "characters/";
 	public static final String FOLDER_WORLD = FOLDER_DATABASE  + "world/";
-	
 	public static final String FILE_WELCOME = FOLDER_DATABASE  + "welcome";
+	/** Temporary Solution */
+	public static final UUID START_ROOM_UUID = UUID.fromString("c58c7c53-7722-4e40-a649-375b6e199a8f");
 }

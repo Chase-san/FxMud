@@ -51,6 +51,8 @@ public class Server {
 			port = 4000;
 		}
 		
+		System.out.println(String.format("FxMud running on port %d.", port));
+		
 		new Server(port).run();
 	}
 	

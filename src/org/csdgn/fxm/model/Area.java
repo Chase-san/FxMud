@@ -40,4 +40,9 @@ public class Area {
 	public static File[] getAreaList() {
 		return new File(Config.FOLDER_WORLD).listFiles();
 	}
+	
+	public void save(String name) {
+		String json = new Gson().toJson(this);
+		IOUtils.setFileContents(name, json);
+	}
 }

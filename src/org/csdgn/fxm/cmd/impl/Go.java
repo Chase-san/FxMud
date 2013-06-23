@@ -29,15 +29,23 @@ public class Go implements Command {
 		Character chara = session.character;
 		String name = chara.givenName;
 		
-		chara.writeLnToRoom(String.format("%s moves %s.", name, exit.name));
-		session.writeLn(String.format("You move %s.", exit.name));
+		chara.writeLnToRoom(String.format(customMsg(exit.exitMsg,"%s moves %s."), name, exit.name));
+		
+		session.writeLn(String.format(customMsg(exit.travelMsg,"You move %s."), exit.name));
 		
 		chara.setRoom(exit.getRoom());
 		
-		//TODO find some way to pair exits so we can get the nicer "X arrives from Y"
-		chara.writeLnToRoom(String.format("%s arrives.", name));
+		Exit targetExit = exit.getRoom().getExit(exit.exitUUID);
+		
+		chara.writeLnToRoom(String.format(customMsg(targetExit.enterMsg,"%s arrives from the %s."), name, targetExit.name));
 		
 		//Do look
 		session.force("look");
+	}
+	
+	private String customMsg(String custom, String standard) {
+		if(custom != null)
+			return custom;
+		return standard;
 	}
 }

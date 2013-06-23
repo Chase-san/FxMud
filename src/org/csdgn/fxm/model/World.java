@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.csdgn.fxm.Config;
 import org.csdgn.fxm.net.InputHandler;
 import org.csdgn.fxm.net.ctrl.Game;
 
@@ -70,6 +71,7 @@ public class World {
 		for(File f : Area.getAreaList()) {
 			areas.add(Area.load(f));
 		}
+		getStartRoom();
 	}
 	
 	/**
@@ -87,19 +89,11 @@ public class World {
 	private Room startRoom = null;
 	
 	public Room getStartRoom() {
-		if(areas.size() == 0) {
-			Area area = new Area();
-			Room room = new Room();
-			
-			room.name = "Start Room";
-			room.description = "The room where all things being.";
-			room.uuid = UUID.randomUUID();
-			
-			area.addRoom(room);
-			
-			areas.add(area);
-			
-			return startRoom = room;
+		if(startRoom == null) {
+			startRoom = getRoomByUUID(Config.START_ROOM_UUID);
+			if(startRoom == null) {
+				throw new RuntimeException("Cannot find start room!");
+			}
 		}
 		return startRoom;
 	}
