@@ -65,14 +65,14 @@ public class Room extends Thing {
 			for(Character p : characters) {
 				if(p == session.character)
 					continue;
-				session.write(String.format("%s %s is standing here.", p.givenName, p.familyName));
+				session.writeLn(String.format("%s %s is standing here.", p.givenName, p.familyName));
 			}
 		}
 	}
 	
 	public Exit getExit(UUID uuid) {
 		for(Exit ex : exits)
-			if(ex.uuid == uuid)
+			if(ex.uuid.equals(uuid))
 				return ex;
 		return null;
 	}
