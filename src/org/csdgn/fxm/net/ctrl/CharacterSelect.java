@@ -89,7 +89,6 @@ public class CharacterSelect implements InputHandler {
 					if(index < user.size()) {
 						session.character = Character.load(user.get(index).uuid);
 						
-						
 						Character tmp = World.instance.getCharacter(session.character.uuid);
 						
 						if(tmp != null) {

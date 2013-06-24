@@ -24,6 +24,7 @@ package org.csdgn.fxm;
 
 import java.io.File;
 import java.io.FileReader;
+import java.nio.charset.Charset;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -31,6 +32,8 @@ import java.util.UUID;
  * @author Chase
  */
 public class Config {
+	public static final Charset ASCII = Charset.forName("US-ASCII");
+	
 	public static String FOLDER_DATABASE = null;
 	public static String FOLDER_USER = null;
 	public static String FOLDER_CHARACTER = null;

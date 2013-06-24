@@ -4,6 +4,7 @@ import java.util.UUID;
 import org.csdgn.fxm.net.InputHandler;
 import org.csdgn.fxm.net.Session;
 import org.csdgn.fxm.net.User;
+import org.csdgn.fxm.model.Actor.Gender;
 import org.csdgn.fxm.model.Character;
 
 public class CharacterNew implements InputHandler {
@@ -65,7 +66,12 @@ public class CharacterNew implements InputHandler {
 					return;
 				case '2':
 					//toggle gender
-					character.isFemale = !character.isFemale;
+					//character.isFemale = !character.isFemale;
+					if(character.gender == Gender.Male) {
+						character.gender = Gender.Female;
+					} else {
+						character.gender = Gender.Male;
+					}
 					displayMenu(session);
 					break;
 				default:
@@ -118,7 +124,7 @@ public class CharacterNew implements InputHandler {
 		
 		session.writeLn(String.format("\t0 - Given Name: %s", character.givenName == null ? "" : character.givenName));
 		session.writeLn(String.format("\t1 - Family Name: %s", character.familyName == null ? "" : character.familyName));
-		session.writeLn(String.format("\t2 - Gender: %s", character.isFemale ? "Female" : "Male"));
+		session.writeLn(String.format("\t2 - Gender: %s", character.gender.toString() ));
 		
 		session.writeLn("","\tL - Redisplay Menu","\tC - Create","\tX - Exit","");
 	}

@@ -32,12 +32,12 @@ public class Room extends Thing {
 	public String name;
 	public String description;
 	public ArrayList<Exit> exits;
-	public transient HashSet<Character> characters;
+	public transient HashSet<Actor> characters;
 	
 	public Room() {
 		uuid = null;
 		exits = new ArrayList<Exit>();
-		characters = new HashSet<Character>();
+		characters = new HashSet<Actor>();
 	}
 	
 	public void displayRoomTo(Session session) {
@@ -62,10 +62,13 @@ public class Room extends Thing {
 		
 		//players
 		if(characters.size() > 1) {
-			for(Character p : characters) {
-				if(p == session.character)
-					continue;
-				session.writeLn(String.format("%s %s is standing here.", p.givenName, p.familyName));
+			for(Actor act : characters) {
+				if(act instanceof Character) {
+					Character chara = (Character)act;
+					if(chara == session.character)
+						continue;
+					session.writeLn(String.format("%s %s is standing here.", chara.givenName, chara.familyName));
+				}
 			}
 		}
 	}

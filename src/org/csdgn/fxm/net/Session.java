@@ -25,14 +25,13 @@ package org.csdgn.fxm.net;
 import java.nio.charset.Charset;
 import java.util.ArrayDeque;
 
+import org.csdgn.fxm.Config;
 import org.csdgn.fxm.model.Character;
 import org.csdgn.fxm.net.ctrl.Login;
 
 import io.netty.channel.Channel;
 
 public class Session {
-	private static final Charset ASCII = Charset.forName("US-ASCII");
-
 	protected boolean disconnected = false;
 	protected ArrayDeque<InputHandler> hStack;
 	protected InputHandler handler;
@@ -166,6 +165,6 @@ public class Session {
 	 *            The message.
 	 */
 	public synchronized void writeRaw(String message) {
-		channel.write(message.getBytes(ASCII));
+		channel.write(message.getBytes(Config.ASCII));
 	}
 }

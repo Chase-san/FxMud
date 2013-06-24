@@ -26,24 +26,11 @@ import java.io.File;
 import java.util.UUID;
 
 import org.csdgn.fxm.Config;
-import org.csdgn.fxm.net.Session;
 import org.csdgn.util.IOUtils;
 
 import com.google.gson.Gson;
 
-public class Character extends Thing {
-	public transient Session session;
-	public transient Room room;
-	public UUID roomUUID;
-	public boolean isFemale = false;
-	public String givenName = null;
-	public String familyName = null;
-	
-	public Character() {
-		uuid = null;
-		roomUUID = null;
-	}
-	
+public class Character extends Actor {
 	/**
 	 * Saves this character back to file. Seldom use only!
 	 */
@@ -73,19 +60,6 @@ public class Character extends Thing {
 	}
 	
 	/**
-	 * Sets the players current room.
-	 */
-	public void setRoom(Room room) {
-		if(this.room != null)
-			this.room.characters.remove(this);
-		this.room = room;
-		if(room != null) {
-			room.characters.add(this);
-			this.roomUUID = room.uuid;
-		}
-	}
-	
-	/**
 	 * Writes messages to everyone else in the room. Each message in the array is terminated with
 	 * <code>\r\n</code>.
 	 * 
@@ -99,10 +73,10 @@ public class Character extends Thing {
 		}
 		String msg = buf.toString();
 		
-		for(Character p : room.characters) {
-			if(p == this)
+		for(Actor actor : room.characters) {
+			if(actor == this)
 				continue;
-			p.session.write(msg);
+			actor.write(msg);
 		}
 	}
 }
